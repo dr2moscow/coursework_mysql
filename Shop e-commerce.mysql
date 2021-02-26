@@ -1,0 +1,247 @@
+# Create schemas
+
+# Create tables
+# <p>Таблица пользователей интернет-магазина. Пользователь может быть покупателем или сотрудником магазина, определяется ролью (roll_id)</p>
+#
+CREATE TABLE IF NOT EXISTS user
+(
+    id INT NOT NULL,
+    name VARCHAR(255),
+    password VARCHAR(255),
+    login VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(20) NOT NULL,
+    firstname VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+    phone VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    address VARCHAR(255),
+    gender TINYINT(1),
+    birthday_at DATE,
+    roll_id INT NOT NULL,
+    status TINYINT(1) NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица с инфомрацией о продукции продаваемой в интернет-магазине</p>
+#
+CREATE TABLE IF NOT EXISTS product
+(
+    id INT NOT NULL,
+    product_name VARCHAR(100) NOT NULL UNIQUE,
+    product_SKU VARCHAR(20),
+    product_description VARCHAR(255),
+    product_content VARCHAR(10000),
+    product_media INT,
+    product_price DECIMAL(0, 2),
+    product_views INT,
+    product_discount DECIMAL(0, 2),
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    created_by INT NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица с категориями товара</p>
+#
+CREATE TABLE IF NOT EXISTS category
+(
+    id INT NOT NULL,
+    category_name VARCHAR(50),
+    category_description VARCHAR(255),
+    created_by INT NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица определения категорий в которых расположен товар. Один товар может принадлежат нескольким категориям</p>
+#
+CREATE TABLE IF NOT EXISTS product_category
+(
+    id INT NOT NULL,
+    created_by INT NOT NULL,
+    product_id INT,
+    category_id INT,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица заказов</p>
+#
+CREATE TABLE IF NOT EXISTS order
+(
+    id INT NOT NULL,
+    user_id INT NOT NULL,
+    order_note VARCHAR(500),
+    order_status INT,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица состава заказа по товару</p>
+#
+CREATE TABLE IF NOT EXISTS basket
+(
+    id INT NOT NULL,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    basket_quantity SMALLINT NOT NULL,
+    basket_price DECIMAL(0, 2) NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица финансовых операций</p>
+#
+CREATE TABLE IF NOT EXISTS transaction
+(
+    id INT NOT NULL,
+    user_id INT NOT NULL,
+    order_id INT NOT NULL,
+    pay_system_id INT NOT NULL,
+    transaction_pay_summ DECIMAL(0, 2),
+    transaction_pay_system_message VARCHAR(100),
+    transaction_type TINYINT(1),
+    transaction_status SMALLINT,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Уровень доступа к интернет-магазину</p>
+#
+CREATE TABLE IF NOT EXISTS roll
+(
+    id INT NOT NULL,
+    roll_name VARCHAR(255),
+    roll_status TINYINT(1),
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица остатков товара</p>
+#
+CREATE TABLE IF NOT EXISTS stock
+(
+    id INT NOT NULL,
+    product_id INT,
+    stock_reserve INT,
+    stock_avaible INT,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица с оценкой и отзывами по товару</p>
+#
+CREATE TABLE IF NOT EXISTS review
+(
+    id INT NOT NULL,
+    review_rating SMALLINT,
+    review_description VARCHAR(255),
+    rreview_status TINYINT(1),
+    created_by INT NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
+
+# <p>Таблица платежных систем</p>
+#
+CREATE TABLE IF NOT EXISTS pay_system
+(
+    id INT NOT NULL,
+    pay_system_name VARCHAR(20),
+    pay_system_status TINYINT(1),
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    created_by INT NOT NULL,
+    PRIMARY KEY(id)
+);
+
+
+# Create FKs
+ALTER TABLE product_category
+    ADD    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+;
+    
+ALTER TABLE product_category
+    ADD    FOREIGN KEY (category_id)
+    REFERENCES category(id)
+;
+    
+ALTER TABLE order
+    ADD    FOREIGN KEY (id)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE product
+    ADD    FOREIGN KEY (id)
+    REFERENCES review(id)
+;
+    
+ALTER TABLE user
+    ADD    FOREIGN KEY (roll_id)
+    REFERENCES roll(id)
+;
+    
+ALTER TABLE product_category
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE category
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE transaction
+    ADD    FOREIGN KEY (pay_system_id)
+    REFERENCES pay_system(id)
+;
+    
+ALTER TABLE transaction
+    ADD    FOREIGN KEY (user_id)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE transaction
+    ADD    FOREIGN KEY (order_id)
+    REFERENCES order(id)
+;
+    
+ALTER TABLE product
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE review
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE basket
+    ADD    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+;
+    
+ALTER TABLE stock
+    ADD    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+;
+    
+ALTER TABLE basket
+    ADD    FOREIGN KEY (order_id)
+    REFERENCES order(id)
+;
+    
+
+# Create Indexes
+

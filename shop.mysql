@@ -1,0 +1,232 @@
+# Create schemas
+
+# Create tables
+CREATE TABLE IF NOT EXISTS user
+(
+    id INT NOT NULL,
+    name VARCHAR(255),
+    password VARCHAR(255),
+    login VARCHAR(20),
+    password VARCHAR(20),
+    firstname VARCHAR(255),
+    lastname VARCHAR(255),
+    phone VARCHAR(255),
+    email VARCHAR(255),
+    address VARCHAR(255),
+    gender TINYINT(1),
+    birthday_at DATE,
+    roll_id INT,
+    status TINYINT(1),
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+# <p>Продукт</p>
+#
+CREATE TABLE IF NOT EXISTS product
+(
+    id INT NOT NULL,
+    name VARCHAR(100),
+    SKU VARCHAR(20),
+    description VARCHAR(255),
+    content VARCHAR(10000),
+    Media INT,
+    price DECIMAL(0, 2),
+    views INT,
+    discount DECIMAL(0, 2),
+    updated_at DATETIME,
+    created_at DATETIME,
+    created_by INT,
+    PRIMARY KEY(id)
+);
+
+# <p>Товарные категории</p>
+#
+CREATE TABLE IF NOT EXISTS catagory
+(
+    id INT NOT NULL,
+    created_by INT,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+# <p>Один товар может принадлежат нескольким категориям</p>
+#
+CREATE TABLE IF NOT EXISTS product_catagory
+(
+    id INT NOT NULL,
+    created_by INT,
+    product_id INT,
+    catagory_id INT,
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS order
+(
+    id INT NOT NULL,
+    user_id INT,
+    note VARCHAR(500),
+    status INT,
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS basket
+(
+    id INT NOT NULL,
+    order_id INT,
+    product_id INT,
+    quantity SMALLINT,
+    price DECIMAL(0, 2),
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS transaction
+(
+    id INT NOT NULL,
+    user_id INT,
+    order_id INT,
+    pay_system_id INT,
+    pay_summ DECIMAL(0, 2),
+    pay_system_message VARCHAR(100),
+    type TINYINT(1),
+    status SMALLINT,
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS roll
+(
+    id INT NOT NULL,
+    name VARCHAR(255),
+    value SMALLINT,
+    status TINYINT(1),
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS stock
+(
+    id INT NOT NULL,
+    product_id INT,
+    quantity_reserve INT,
+    quantity_avaible INT,
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS review
+(
+    id INT NOT NULL,
+    rating SMALLINT,
+    description VARCHAR(255),
+    status TINYINT(1),
+    created_by INT,
+    updated_at DATETIME,
+    created_at DATETIME,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS pay_system
+(
+    id INT NOT NULL,
+    value VARCHAR(20),
+    status TINYINT(1),
+    updated_at DATETIME,
+    created_at DATETIME,
+    created_by INT,
+    PRIMARY KEY(id)
+);
+
+
+# Create FKs
+ALTER TABLE product_catagory
+    ADD    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+;
+    
+ALTER TABLE product_catagory
+    ADD    FOREIGN KEY (catagory_id)
+    REFERENCES catagory(id)
+;
+    
+ALTER TABLE order
+    ADD    FOREIGN KEY (id)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE basket
+    ADD    FOREIGN KEY (order_id)
+    REFERENCES order(id)
+;
+    
+ALTER TABLE basket
+    ADD    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+;
+    
+ALTER TABLE stock
+    ADD    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+;
+    
+ALTER TABLE product
+    ADD    FOREIGN KEY (id)
+    REFERENCES review(id)
+;
+    
+ALTER TABLE user
+    ADD    FOREIGN KEY (roll_id)
+    REFERENCES roll(id)
+;
+    
+ALTER TABLE product_catagory
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE catagory
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE transaction
+    ADD    FOREIGN KEY (pay_system_id)
+    REFERENCES pay_system(id)
+;
+    
+ALTER TABLE transaction
+    ADD    FOREIGN KEY (user_id)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE transaction
+    ADD    FOREIGN KEY (order_id)
+    REFERENCES order(id)
+;
+    
+ALTER TABLE product
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+ALTER TABLE review
+    ADD    FOREIGN KEY (created_by)
+    REFERENCES user(id)
+;
+    
+
+# Create Indexes
+

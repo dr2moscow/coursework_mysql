@@ -1,33 +1,35 @@
 # Create schemas
 
 # Create tables
+# <p>Таблица пользователей интернет-магазина. Пользователь может быть покупателем или сотрудником магазина, определяется ролью (roll_id)</p>
+#
 CREATE TABLE IF NOT EXISTS user
 (
     id INT NOT NULL,
     name VARCHAR(255),
     password VARCHAR(255),
-    login VARCHAR(20),
-    password VARCHAR(20),
-    firstname VARCHAR(255),
-    lastname VARCHAR(255),
-    phone VARCHAR(255),
-    email VARCHAR(255),
+    login VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(20) NOT NULL,
+    firstname VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+    phone VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     address VARCHAR(255),
     gender TINYINT(1),
     birthday_at DATE,
-    roll_id INT,
-    status TINYINT(1),
-    updated_at DATETIME,
-    created_at DATETIME,
+    roll_id INT NOT NULL,
+    status TINYINT(1) NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
-# <p>Продукт</p>
+# <p>Таблица с инфомрацией о продукции продаваемой в интернет-магазине</p>
 #
 CREATE TABLE IF NOT EXISTS product
 (
     id INT NOT NULL,
-    name VARCHAR(100),
+    name VARCHAR(100) NOT NULL UNIQUE,
     SKU VARCHAR(20),
     description VARCHAR(255),
     content VARCHAR(10000),
@@ -35,118 +37,132 @@ CREATE TABLE IF NOT EXISTS product
     price DECIMAL(0, 2),
     views INT,
     discount DECIMAL(0, 2),
-    updated_at DATETIME,
-    created_at DATETIME,
-    created_by INT,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    created_by INT NOT NULL,
     PRIMARY KEY(id)
 );
 
-# <p>Товарные категории</p>
+# <p>Таблица с категориями товара</p>
 #
 CREATE TABLE IF NOT EXISTS catagory
 (
     id INT NOT NULL,
-    created_by INT,
     name VARCHAR(50),
     description VARCHAR(255),
-    updated_at DATETIME,
-    created_at DATETIME,
+    created_by INT NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
-# <p>Один товар может принадлежат нескольким категориям</p>
+# <p>Таблица определения категорий в которых расположен товар. Один товар может принадлежат нескольким категориям</p>
 #
 CREATE TABLE IF NOT EXISTS product_catagory
 (
     id INT NOT NULL,
-    created_by INT,
+    created_by INT NOT NULL,
     product_id INT,
     catagory_id INT,
-    updated_at DATETIME,
-    created_at DATETIME,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
+# <p>Таблица заказов</p>
+#
 CREATE TABLE IF NOT EXISTS order
 (
     id INT NOT NULL,
-    user_id INT,
+    user_id INT NOT NULL,
     note VARCHAR(500),
     status INT,
-    updated_at DATETIME,
+    updated_at DATETIME NOT NULL,
     created_at DATETIME,
     PRIMARY KEY(id)
 );
 
+# <p>Таблица состава заказа по товару</p>
+#
 CREATE TABLE IF NOT EXISTS basket
 (
     id INT NOT NULL,
-    order_id INT,
-    product_id INT,
-    quantity SMALLINT,
-    price DECIMAL(0, 2),
-    updated_at DATETIME,
-    created_at DATETIME,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity SMALLINT NOT NULL,
+    price DECIMAL(0, 2) NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
+# <p>Таблица финансовых операций</p>
+#
 CREATE TABLE IF NOT EXISTS transaction
 (
     id INT NOT NULL,
-    user_id INT,
-    order_id INT,
-    pay_system_id INT,
+    user_id INT NOT NULL,
+    order_id INT NOT NULL,
+    pay_system_id INT NOT NULL,
     pay_summ DECIMAL(0, 2),
     pay_system_message VARCHAR(100),
     type TINYINT(1),
     status SMALLINT,
-    updated_at DATETIME,
-    created_at DATETIME,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
+# <p>Уровень доступа к интернет-магазину</p>
+#
 CREATE TABLE IF NOT EXISTS roll
 (
     id INT NOT NULL,
     name VARCHAR(255),
     value SMALLINT,
     status TINYINT(1),
-    updated_at DATETIME,
-    created_at DATETIME,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
+# <p>Таблица остатков товара</p>
+#
 CREATE TABLE IF NOT EXISTS stock
 (
     id INT NOT NULL,
     product_id INT,
     quantity_reserve INT,
     quantity_avaible INT,
-    updated_at DATETIME,
-    created_at DATETIME,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
+# <p>Таблица с оценкой и отзывами по товару</p>
+#
 CREATE TABLE IF NOT EXISTS review
 (
     id INT NOT NULL,
     rating SMALLINT,
     description VARCHAR(255),
     status TINYINT(1),
-    created_by INT,
-    updated_at DATETIME,
-    created_at DATETIME,
+    created_by INT NOT NULL,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id)
 );
 
+# <p>Таблица платежных систем</p>
+#
 CREATE TABLE IF NOT EXISTS pay_system
 (
     id INT NOT NULL,
     value VARCHAR(20),
     status TINYINT(1),
-    updated_at DATETIME,
-    created_at DATETIME,
-    created_by INT,
+    updated_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    created_by INT NOT NULL,
     PRIMARY KEY(id)
 );
 

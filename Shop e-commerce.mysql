@@ -3,7 +3,7 @@
 # Create tables
 # <p>Таблица пользователей интернет-магазина. Пользователь может быть покупателем или сотрудником магазина, определяется ролью (roll_id)</p>
 #
-CREATE TABLE IF NOT EXISTS user
+CREATE TABLE IF NOT EXISTS users
 (
     id INT NOT NULL,
     login VARCHAR(20) NOT NULL UNIQUE,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS user
 
 # <p>Таблица с инфомрацией о продукции продаваемой в интернет-магазине</p>
 #
-CREATE TABLE IF NOT EXISTS product
+CREATE TABLE IF NOT EXISTS products
 (
     id INT NOT NULL,
     product_name VARCHAR(100) NOT NULL UNIQUE,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS product
 
 # <p>Таблица с категориями товара</p>
 #
-CREATE TABLE IF NOT EXISTS category
+CREATE TABLE IF NOT EXISTS categories
 (
     id INT NOT NULL,
     category_name VARCHAR(50),
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS basket
 
 # <p>Таблица финансовых операций</p>
 #
-CREATE TABLE IF NOT EXISTS transaction
+CREATE TABLE IF NOT EXISTS transactions
 (
     id INT NOT NULL,
     user_id INT NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS transaction
 
 # <p>Уровень доступа к интернет-магазину</p>
 #
-CREATE TABLE IF NOT EXISTS roll
+CREATE TABLE IF NOT EXISTS rolls
 (
     id INT NOT NULL,
     roll_name VARCHAR(255),
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS stock
 
 # <p>Таблица с оценкой и отзывами по товару</p>
 #
-CREATE TABLE IF NOT EXISTS review
+CREATE TABLE IF NOT EXISTS reviews
 (
     id INT NOT NULL,
     review_rating SMALLINT,
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS review
 
 # <p>Таблица платежных систем</p>
 #
-CREATE TABLE IF NOT EXISTS pay_system
+CREATE TABLE IF NOT EXISTS pay_systems
 (
     id INT NOT NULL,
     pay_system_name VARCHAR(20),
@@ -170,72 +170,72 @@ CREATE TABLE IF NOT EXISTS pay_system
 # Create FKs
 ALTER TABLE product_category
     ADD    FOREIGN KEY (product_id)
-    REFERENCES product(id)
+    REFERENCES products(id)
 ;
     
 ALTER TABLE product_category
     ADD    FOREIGN KEY (category_id)
-    REFERENCES category(id)
+    REFERENCES categories(id)
 ;
     
 ALTER TABLE orders
     ADD    FOREIGN KEY (id)
-    REFERENCES user(id)
+    REFERENCES users(id)
 ;
     
-ALTER TABLE product
+ALTER TABLE products
     ADD    FOREIGN KEY (id)
-    REFERENCES review(id)
+    REFERENCES reviews(id)
 ;
     
-ALTER TABLE user
+ALTER TABLE users
     ADD    FOREIGN KEY (roll_id)
-    REFERENCES roll(id)
+    REFERENCES rolls(id)
 ;
     
 ALTER TABLE product_category
     ADD    FOREIGN KEY (created_by)
-    REFERENCES user(id)
+    REFERENCES users(id)
 ;
     
-ALTER TABLE category
+ALTER TABLE categories
     ADD    FOREIGN KEY (created_by)
-    REFERENCES user(id)
+    REFERENCES users(id)
 ;
     
-ALTER TABLE transaction
+ALTER TABLE transactions
     ADD    FOREIGN KEY (pay_system_id)
-    REFERENCES pay_system(id)
+    REFERENCES pay_systems(id)
 ;
     
-ALTER TABLE transaction
+ALTER TABLE transactions
     ADD    FOREIGN KEY (user_id)
-    REFERENCES user(id)
+    REFERENCES users(id)
 ;
     
-ALTER TABLE transaction
+ALTER TABLE transactions
     ADD    FOREIGN KEY (orders_id)
     REFERENCES orders(id)
 ;
     
-ALTER TABLE product
+ALTER TABLE products
     ADD    FOREIGN KEY (created_by)
-    REFERENCES user(id)
+    REFERENCES users(id)
 ;
     
-ALTER TABLE review
+ALTER TABLE reviews
     ADD    FOREIGN KEY (created_by)
-    REFERENCES user(id)
+    REFERENCES users(id)
 ;
     
 ALTER TABLE basket
     ADD    FOREIGN KEY (product_id)
-    REFERENCES product(id)
+    REFERENCES products(id)
 ;
     
 ALTER TABLE stock
     ADD    FOREIGN KEY (product_id)
-    REFERENCES product(id)
+    REFERENCES products(id)
 ;
     
 ALTER TABLE basket
